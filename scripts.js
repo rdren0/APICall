@@ -10,13 +10,19 @@ container.setAttribute('class', 'container');
 app.appendChild(logo);
 app.appendChild(container);
 
-var request = new XMLHttpRequest();
-request.open('GET', 'https://ghibliapi.herokuapp.com/films', true);
-request.onload = function () {
+const getData = async (url) =>{
+  const response = await fetch(url);
+  if (response.ok) {
+  return response.json();
+} else{
+  throw Error(`Error getting data: ${response.statusText}`);
+  }
+}
 
-  // Begin accessing JSON data here
-  var data = JSON.parse(this.response);
-  if (request.status >= 200 && request.status < 400) {
+const addData = async () =>{
+  try{
+   const data = await getData('https://ghibliapi.herokuapp.com/films');
+    console.log(data);
     data.forEach(movie => {
       const card = document.createElement('div');
       card.setAttribute('class', 'card');
@@ -35,7 +41,11 @@ request.onload = function () {
       card.appendChild(h2);
       card.appendChild(p);
     });
-  } 
+  }catch(error){
+    console.log(error);
+  }
 }
 
-request.send();
+addData();
+
+  
